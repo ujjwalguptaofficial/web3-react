@@ -13,7 +13,10 @@ export default function (props) {
             <h1>WEB3 Demo</h1>
             <h5>Wallet Address: {props.walleAddress}</h5>
             <h5>ChainId : {props.chainId}</h5>
-            <div className="border">
+            <div>
+                <button onClick={props.disconnectWallet}>Disconnect wallet</button>
+            </div>
+            <div className="border mt-20">
                 <h4>ERC20</h4>
                 <div>
                     <button onClick={props.alertTokenName}>Get token Name</button>

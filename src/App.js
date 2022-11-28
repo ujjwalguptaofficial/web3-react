@@ -62,6 +62,10 @@ export function App() {
     initContract(provider);
   }
 
+  function disconnectWallet() {
+    setIsWalletConnected(false);
+  }
+
 
   const loginComponent = !isWalletConnected ? <Login onWalletConnect={onWalletConnect} /> : (
     <Dashboard walleAddress={walleAddress}
@@ -70,7 +74,9 @@ export function App() {
       alertUserBalance={alertUserBalance}
       sendTransaction={sendTransaction}
       getEthBalance={getEthBalance}
-      sendEthTransaction={sendEthTransaction} />
+      sendEthTransaction={sendEthTransaction}
+      disconnectWallet={disconnectWallet}
+    />
   )
   return (
     <div className="App">
