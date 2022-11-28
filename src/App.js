@@ -37,7 +37,9 @@ export function App() {
   }
 
   async function sendTransaction(amount, to) {
-    const balance = await contract.current.functions.transfer(to, amount);
+    const balance = await contract.current.functions.transfer(to, amount, {
+      gasLimit: 5000
+    });
     alert("transaction hash is :", balance.hash);
   }
 
