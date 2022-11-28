@@ -1,22 +1,25 @@
 import './App.css';
 import React, { useEffect, useRef, useState } from "react";
-import { Contract, ethers } from 'ethers';
+import { Contract, ethers, providers } from 'ethers';
+import Login from "./components/login";
 
 export function App() {
 
-  const [isLoaded, setIsLoaded] = useState(false);
-  let contract = useRef();
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
+  const contract = useRef();
+  const [walleAddress, setWalletAddress] = useState("");
+  // new ethers.providers.JsonRpcProvider('https://polygon-rpc.com');
 
-  useEffect(() => {
-    const initContract = async () => {
-      const provider = new ethers.providers.JsonRpcProvider('https://polygon-rpc.com');
-      const response = await fetch("https://raw.githubusercontent.com/ujjwalguptaofficial/ethcontracts/main/abi/erc20.json");
-      const abi = await response.json();
-      contract.current = new Contract("0x8f3cf7ad23cd3cadbd9735aff958023239c6a063", abi, provider);
-      setIsLoaded(true);
-    };
-    initContract();
-  }, [])
+
+  async function initContract(provider) {
+    const response = await fetch("https://raw.githubusercontent.com/ujjwalguptaofficial/ethcontracts/main/abi/erc20.json");
+    const abi = await response.json();
+    const web3Provider = new providers.Web3Provider(provider);
+    contract.current = new Contract("0x8f3cf7ad23cd3cadbd9735aff958023239c6a063", abi, web3Provider);
+    setIsWalletConnected(true);
+    const address = await web3Provider.getSigner().getAddress();
+    setWalletAddress(address);
+  };
 
   async function alertTokenName() {
     const name = await contract.current.functions.name();
@@ -28,29 +31,23 @@ export function App() {
     alert(`token symbol is ${symbol}`);
   }
 
+  function onWalletConnect(provider) {
+    initContract(provider);
+  }
+
+
+  const loginComponent = !isWalletConnected ? <Login onWalletConnect={onWalletConnect} /> : <div>
+    <h1>WEB3 Demo</h1>
+    <h5>Wallet Address: {walleAddress}</h5>
+    <button onClick={alertTokenName}>Get token Name</button>
+    <div>
+      <button className='mt-20' onClick={alertTokenSymbol}>Get token symbol</button>
+    </div>
+  </div>;
   return (
     <div className="App">
-      {(() => {
-        if (isLoaded) {
-          return (
-            <div>
-              <h1>EthContract.js Demo</h1>
-              <button onClick={alertTokenName}>Get token Name</button>
-              <div>
-                <button className='mt-20' onClick={alertTokenSymbol}>Get token symbol</button>
-              </div>
-            </div>
-          )
-        }
-        else {
-          return (
-            <div>
-              Loading...
-            </div>
-          )
-        }
-      })()
-      }
+      {loginComponent}
+
     </div>
   );
 }
