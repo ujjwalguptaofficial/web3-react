@@ -49,6 +49,11 @@ export function App() {
     });
   }
 
+  async function getEthBalance(amount, to) {
+    const balance = await web3Provider.current.getBalance(walleAddress);
+    alert(`user balance is ${balance}`);
+  }
+
 
   function onWalletConnect(provider) {
     web3Provider.current = new providers.Web3Provider(provider);
@@ -62,6 +67,7 @@ export function App() {
       alertTokenName={alertTokenName}
       alertUserBalance={alertUserBalance}
       sendTransaction={sendTransaction}
+      getEthBalance={getEthBalance}
       sendEthTransaction={sendEthTransaction} />
   )
   return (

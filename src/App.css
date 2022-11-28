@@ -18,3 +18,8 @@
 .ml-10 {
   margin-left: 10px;
 }
+
+.border {
+  border: 2px solid;
+  padding: 10px;
+}
